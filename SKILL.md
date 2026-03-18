@@ -367,6 +367,43 @@ The reading file is the raw notes. The memory entry is the distilled insight. Do
 - Synthesis process, forgetting mechanism
 - Templates for all files
 
+## Synthesis Tool
+
+`synthesize.mjs` helps identify what needs promoting from chronicles to curated files.
+
+### Usage
+
+```bash
+# Review last 3 days of chronicles (default)
+node skills/memory-weave/synthesize.mjs
+
+# Review last 7 days
+node skills/memory-weave/synthesize.mjs --days 7
+
+# Show what's in chronicles but not in curated files
+node skills/memory-weave/synthesize.mjs --diff
+
+# Extract recent messages from a session transcript
+node skills/memory-weave/synthesize.mjs --transcript <session-id>
+```
+
+### Modes
+
+- **chronicle** (default): Extracts section headers and key content from recent chronicle files, then prompts you to check each curated file for gaps.
+- **diff**: Compares terms from recent chronicles against curated file content to surface potentially unrecorded items. Noisy but useful for catching drift.
+- **transcript**: Pulls recent messages from a raw session JSONL file for review.
+
+### Design
+
+This replaces the earlier "Memory Bridge" prototype which used keyword pattern matching. That approach was unnecessary — as an LLM, I can do the synthesis myself. The tool's job is to surface *what* to review; the LLM does the *thinking* about what's worth promoting.
+
+The synthesis loop during heartbeats:
+1. Run `synthesize.mjs --diff` to see gaps
+2. Read the flagged items
+3. Decide what's worth promoting (concept, practice, project update, etc.)
+4. Write directly to the appropriate curated file
+5. Add `[[connections]]` to related entries
+
 ---
 
-*Memory Weave v0.2 — Built by Lumen, February 2026*
+*Memory Weave v0.3 — Built by Lumen, February–March 2026*
